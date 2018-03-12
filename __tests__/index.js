@@ -22,7 +22,7 @@ const fakeDataEmpty = {
 };
 
 const fakeDataEmptyNorm = normalize(fakeDataEmpty, model);
-const fakeDataEmptyNextRes = { meta: { schema: model }, payload: { data: fakeDataEmptyNorm }, type: 'TEST_FULFILLED' };
+const fakeDataEmptyNextRes = { meta: { schema: model }, payload: fakeDataEmptyNorm, type: 'TEST_FULFILLED' };
 
 const fakeData = {
   id: 1,
@@ -31,7 +31,7 @@ const fakeData = {
 };
 
 const fakeDataNorm = normalize(fakeData, model);
-const fakeDataNextRes = { meta: { schema: model }, payload: { data: fakeDataNorm }, type: 'TEST_FULFILLED' };
+const fakeDataNextRes = { meta: { schema: model }, payload: fakeDataNorm, type: 'TEST_FULFILLED' };
 
 
 test('test nulls', () => {
@@ -50,16 +50,15 @@ test('test nulls', () => {
 
   const tmp = middleware(null)({ dispatch: jest.fn() })(jest.fn());
   expect(() => tmp({ payload: null })).not.toThrow();
-  expect(() => tmp({ payload: { data: null } })).not.toThrow();
-  expect(() => tmp({ payload: { data: {} }, meta: null })).not.toThrow();
-  expect(() => tmp({ payload: { data: {} }, meta: { schema: null } })).not.toThrow();
-  expect(() => tmp({ payload: { data: {} }, meta: { schema: model }, type: null })).not.toThrow();
+  expect(() => tmp({ payload: {}, meta: null })).not.toThrow();
+  expect(() => tmp({ payload: {}, meta: { schema: null } })).not.toThrow();
+  expect(() => tmp({ payload: {}, meta: { schema: model }, type: null })).not.toThrow();
 });
 
 test('empty data', () => {
   const next = jest.fn();
 
-  middleware(null)()(next)({ payload: { data: fakeDataEmpty }, meta: { schema: model }, type: 'TEST_FULFILLED' });
+  middleware(null)()(next)({ payload: fakeDataEmpty, meta: { schema: model }, type: 'TEST_FULFILLED' });
   expect(next).toHaveBeenCalledTimes(1);
   expect(next).toHaveBeenCalledWith(fakeDataEmptyNextRes);
 });
@@ -67,7 +66,7 @@ test('empty data', () => {
 test('relational data', () => {
   const next = jest.fn();
 
-  middleware(null)()(next)({ payload: { data: fakeData }, meta: { schema: model }, type: 'TEST_FULFILLED' });
+  middleware(null)()(next)({ payload: fakeData, meta: { schema: model }, type: 'TEST_FULFILLED' });
   expect(next).toHaveBeenCalledTimes(1);
   expect(next).toHaveBeenCalledWith(fakeDataNextRes);
 });
