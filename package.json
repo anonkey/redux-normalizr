@@ -30,10 +30,14 @@
     "eslint-plugin-jest": "^21.14.0",
     "jest": "^22.4.2",
     "jest-runner-eslint": "^0.4.0",
+    "pre-push": "^0.1.1",
     "redux": "^3.7.2"
   },
   "dependencies": {
     "normalizr": "^3.2.4",
     "lodash": "^4.17.5"
-  }
+  },
+  "pre-push": [
+    "test"
+  ]
 }
