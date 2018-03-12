@@ -22,8 +22,7 @@ const fakeDataEmpty = {
 };
 
 const fakeDataEmptyNorm = normalize(fakeDataEmpty, model);
-const fakeDataEmptyNextRes = { meta: { schema: model }, payload: { data: fakeDataEmptyNorm.result }, type: 'TEST_FULFILLED' };
-const fakeDataEmptyDispatchRes = { payload: fakeDataEmptyNorm.entities, type: 'STORE_UPDATE' };
+const fakeDataEmptyNextRes = { meta: { schema: model }, payload: { data: fakeDataEmptyNorm }, type: 'TEST_FULFILLED' };
 
 const fakeData = {
   id: 1,
@@ -32,8 +31,7 @@ const fakeData = {
 };
 
 const fakeDataNorm = normalize(fakeData, model);
-const fakeDataNextRes = { meta: { schema: model }, payload: { data: fakeDataNorm.result }, type: 'TEST_FULFILLED' };
-const fakeDataDispatchRes = { payload: fakeDataNorm.entities, type: 'STORE_UPDATE' };
+const fakeDataNextRes = { meta: { schema: model }, payload: { data: fakeDataNorm }, type: 'TEST_FULFILLED' };
 
 
 test('test nulls', () => {
@@ -59,23 +57,17 @@ test('test nulls', () => {
 });
 
 test('empty data', () => {
-  const dispatch = jest.fn();
   const next = jest.fn();
 
-  middleware(null)({ dispatch })(next)({ payload: { data: fakeDataEmpty }, meta: { schema: model }, type: 'TEST_FULFILLED' });
-  expect(dispatch).toHaveBeenCalledTimes(1);
-  expect(dispatch).toHaveBeenCalledWith(fakeDataEmptyDispatchRes);
+  middleware(null)()(next)({ payload: { data: fakeDataEmpty }, meta: { schema: model }, type: 'TEST_FULFILLED' });
   expect(next).toHaveBeenCalledTimes(1);
   expect(next).toHaveBeenCalledWith(fakeDataEmptyNextRes);
 });
 
 test('relational data', () => {
-  const dispatch = jest.fn();
   const next = jest.fn();
 
-  middleware(null)({ dispatch })(next)({ payload: { data: fakeData }, meta: { schema: model }, type: 'TEST_FULFILLED' });
-  expect(dispatch).toHaveBeenCalledTimes(1);
-  expect(dispatch).toHaveBeenCalledWith(fakeDataDispatchRes);
+  middleware(null)()(next)({ payload: { data: fakeData }, meta: { schema: model }, type: 'TEST_FULFILLED' });
   expect(next).toHaveBeenCalledTimes(1);
   expect(next).toHaveBeenCalledWith(fakeDataNextRes);
 });
