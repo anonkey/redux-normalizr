@@ -1,0 +1,39 @@
+{
+  "name": "redux-normalizr-middleware",
+  "version": "1.0.0",
+  "description": "Redux data normalization middleware",
+  "main": "dist/",
+  "repository": "https://github.com/anonkey/redux-normalizr",
+  "files": [
+    "README.md",
+    "dist/"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && mkdir dist && babel index.js -o dist/index.js",
+    "prepublish": "npm test && npm run build",
+    "test": "jest"
+  },
+  "keywords": [
+    "normalizr",
+    "redux",
+    "redux-middleware"
+  ],
+  "author": "anonkey",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.4.5",
+    "babel-core": "^6.26.0",
+    "babel-jest": "^22.4.1",
+    "babel-preset-env": "^6.3.13",
+    "babel-preset-stage-2": "^6.24.1",
+    "eslint": "^4.18.2",
+    "eslint-plugin-jest": "^21.14.0",
+    "jest": "^22.4.2",
+    "jest-runner-eslint": "^0.4.0",
+    "redux": "^3.7.2"
+  },
+  "dependencies": {
+    "normalizr": "^3.2.4",
+    "lodash": "^4.17.5"
+  }
+}
