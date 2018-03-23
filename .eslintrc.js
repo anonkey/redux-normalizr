@@ -1,6 +1,5 @@
 module.exports = {
-  extends: 'airbnb',
-
+  extends: ['plugin:jest/recommended', 'airbnb'],
   parser: 'babel-eslint',
 
   env: {
@@ -35,6 +34,7 @@ module.exports = {
     FormData: false,
     global: false,
     jest: false,
+   'jest/globals': false,
     Map: true,
     module: false,
     navigator: false,
