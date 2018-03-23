@@ -1,7 +1,7 @@
 {
-  "name": "redux-normalizr-middleware",
+  "name": "redux-normalizr",
   "version": "1.0.0",
-  "description": "Redux data normalization middleware",
+  "description": "Redux data normalization middleware which get actions with a meta.schema field an normalize her payload",
   "main": "dist/",
   "repository": "https://github.com/anonkey/redux-normalizr",
   "files": [
@@ -11,11 +11,14 @@
   "scripts": {
     "build": "rm -rf dist && mkdir dist && babel index.js -o dist/index.js",
     "prepublish": "npm test && npm run build",
+    "lint": "eslint index.js",
     "test": "jest"
   },
   "keywords": [
-    "normalizr",
+    "react",
     "redux",
+    "normalizr",
+    "middleware",
     "redux-middleware"
   ],
   "author": "anonkey",
