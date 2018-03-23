@@ -12,8 +12,7 @@ const shouldProcessAction = ({
   meta,
   type,
 }, filter) => (
-  !error && payload && meta && meta.schema
-    && (!filter || (action.type && action.type.match(filter)))
+  !error && payload && meta && meta.schema && (!filter || (type && type.match(filter)))
 );
 
 /**

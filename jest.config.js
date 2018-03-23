@@ -9,14 +9,14 @@ module.exports = {
   // transform: {
   //   '^.+\\.jsx?$': 'babel-jest',
   // },
-  // projects: [
-  //   {
-  //     displayName: 'test',
-  //   },
-  //   {
-  //     displayName: 'lint',
-  //     runner: 'jest-runner-eslint',
-  //     testMatch: ['<rootDir>/!(coverage|__tests__)/**/*.js'],
-  //   },
-  // ],
+  projects: [
+    {
+      displayName: 'Unit tests',
+    },
+    {
+      displayName: 'lint',
+      runner: 'jest-runner-eslint',
+      testMatch: ['<rootDir>/index.js'],
+    },
+  ],
 };
