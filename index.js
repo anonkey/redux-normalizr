@@ -6,13 +6,14 @@ import { normalize } from 'normalizr';
  * @param  {String|Regex} filter filter of action type to match
  * @return {Boolean}  shouldBeProcessed
  */
-const shouldProcessAction = (action, filter) => (
-  action.payload
-    && action.meta
-    && action.meta.schema
-    && (!filter
-      || (action.type
-        && action.type.match(filter)))
+const shouldProcessAction = ({
+  error,
+  payload,
+  meta,
+  type,
+}, filter) => (
+  !error && payload && meta && meta.schema
+    && (!filter || (action.type && action.type.match(filter)))
 );
 
 /**
@@ -40,14 +41,15 @@ const shouldProcessAction = (action, filter) => (
  * @return {Object} normalized data
  */
 /**
-* Check if action should be processed
+* Generate the midleware by default it handle every action with a data.meta.schema field
+* normalize action.payload and replace the payload by normalized payload before p
 * @param  {Object} action  redux action
-* @param  {String} action.type  type used for actionFilter option
+* @param  {String} action.type  type used by actionFilter option
 * @param  {Object} options middleware options
-* @param  {String|Regex} options.actionFilter pattern of action type to match
-* @param  {GetDataCb} options.getActionData get data to normalize in action
-* @param  {OnNextCb} options.onNextAction get data to normalize in action
-* @param  {PostNormalizeCb} options.onNormalizeData update normalized data before sending action
+* @param  {String|Regex} [options.actionFilter] pattern of action type to handle
+* @param  {GetDataCb} [options.getActionData] get data to normalize in action
+* @param  {OnNextCb} [options.onNextAction] get data to normalize in action
+* @param  {PostNormalizeCb} [options.onNormalizeData] update normalized data before sending action
 * @return {ReduxMiddleware}         redux normalizr middleware
 */
 export default (options) => {
