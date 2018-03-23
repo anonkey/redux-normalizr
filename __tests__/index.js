@@ -1,12 +1,13 @@
 import { normalize, schema } from 'normalizr';
-import _ from 'lodash';
 
 import middleware from '../index';
 
 console.log = jest.fn();
+
 afterAll(() => {
   expect(console.log).not.toHaveBeenCalled();
 });
+
 const model = new schema.Entity('models');
 const models = new schema.Array(model);
 
@@ -44,15 +45,28 @@ test('test nulls', () => {
   expect(() => tmp({ meta: { schema: null }, type: null })).not.toThrow();
 });
 
-test('test nulls', () => {
-  expect(() => middleware(null)).not.toThrow();
-  expect(() => middleware({ actionFilter: null })).not.toThrow();
+test('test action error', () => {
+  const getActionData = jest.fn();
+  const onNormalizeData = jest.fn();
+  const onNextAction = jest.fn();
 
-  const tmp = middleware(null)({ dispatch: jest.fn() })(jest.fn());
-  expect(() => tmp({ payload: null })).not.toThrow();
-  expect(() => tmp({ payload: {}, meta: null })).not.toThrow();
-  expect(() => tmp({ payload: {}, meta: { schema: null } })).not.toThrow();
-  expect(() => tmp({ payload: {}, meta: { schema: model }, type: null })).not.toThrow();
+  const next = jest.fn();
+  const action = {
+    payload: fakeDataEmpty,
+    meta: { schema: model },
+    type: 'TEST_FULFILLED',
+    error: true,
+  };
+
+  middleware({
+    getActionData,
+    onNormalizeData,
+    onNextAction,
+  })({ dispatch: jest.fn() })(next)(action);
+  expect(next).toHaveBeenCalledWith(action);
+  expect(getActionData).not.toHaveBeenCalled();
+  expect(onNormalizeData).not.toHaveBeenCalled();
+  expect(onNextAction).not.toHaveBeenCalled();
 });
 
 test('empty data', () => {
@@ -70,3 +84,73 @@ test('relational data', () => {
   expect(next).toHaveBeenCalledTimes(1);
   expect(next).toHaveBeenCalledWith(fakeDataNextRes);
 });
+
+test('callbacksTests default', () => {
+  const getActionData = jest.fn((store, action) => action.payload);
+  const onNormalizeData = jest.fn(data => data);
+  const onNextAction = jest.fn((store, action, normalizedData) => ({
+    ...action,
+    payload: normalizedData,
+  }));
+  const store = { dispatch: jest.fn() };
+  const next = jest.fn();
+  const action = {
+    payload: fakeData,
+    meta: { schema: model },
+    type: 'TEST_FULFILLED',
+  };
+
+  middleware({
+    getActionData,
+    onNormalizeData,
+    onNextAction,
+  })(store)(next)(action);
+  expect(getActionData).toHaveBeenCalledWith(store, action);
+  expect(onNormalizeData).toHaveBeenCalledWith(fakeDataNorm);
+  expect(onNextAction).toHaveBeenCalledWith(store, action, fakeDataNorm);
+  expect(next).toHaveBeenCalledWith(fakeDataNextRes);
+});
+
+test('callbacksTests custom', () => {
+  const getActionData = jest.fn((store, action) => action.payload.data);
+  const onNormalizeData = jest.fn(data => data.result);
+  const onNextAction = jest.fn((store, action, normalizedData) => ({
+    ...action,
+    payload: {
+      ...action.payload,
+      data: normalizedData,
+    },
+  }));
+
+
+  const store = { dispatch: jest.fn() };
+  const next = jest.fn();
+  const action = {
+    payload: {
+      junk: true,
+      data: fakeData,
+    },
+    meta: { schema: model },
+    type: 'TEST_FULFILLED',
+  };
+  const nextResult = {
+    payload: {
+      junk: true,
+      data: fakeDataNorm.result,
+    },
+    meta: { schema: model },
+    type: 'TEST_FULFILLED',
+  };
+
+  middleware({
+    getActionData,
+    onNormalizeData,
+    onNextAction,
+  })(store)(next)(action);
+  expect(getActionData).toHaveBeenCalledWith(store, action);
+  expect(onNormalizeData).toHaveBeenCalledWith(fakeDataNorm);
+  expect(onNextAction).toHaveBeenCalledWith(store, action, fakeDataNorm.result);
+  expect(next).toHaveBeenCalledWith(nextResult);
+});
+
+// TODO: callbacks with dummy data handling tests | filter tests
