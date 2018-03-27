@@ -90,18 +90,14 @@ A simple usage could be :
 
 ```js
 import { compose, createStore, applyMiddleware } from 'redux';
-import { createLogger } from 'redux-logger';
 import normalizrMiddleware from 'redux-normalizr';
+import reducers from './reducers';
 
-export default (reducers, enableLogger) => initialState => createStore(
+export default initialState => createStore(
   reducers,
   initialState,
   compose(applyMiddleware(
       normalizrMiddleware({}),
-      createLogger({
-        duration: true,
-        diff: true,
-      }),
     )
   ))
 ```
@@ -123,6 +119,7 @@ normalize(payload, schema)
 
 
 ```js
+import reducers from './reducers'
 /**
  *  Catch all resolved promise, normalize payload.data field,
  *  send normalized data to a reducer which act as localStore
@@ -154,11 +151,9 @@ const normalizrConfig = {
 /**
  * Create store with reducers and middlewares
  * @param  {Object}     reducers     Map of reducers
- * @param  {Boolean}    enableLogger enable redux logger middleware
- *                                    (can be done by setting LOGGER env var)
  * @return {ReduxStore} the redux store generated
  */
-export default (reducers, enableLogger) => initialState => createStore(
+export default initialState => createStore(
   reducers,
   initialState,
   compose(applyMiddleware(
