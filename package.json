@@ -12,7 +12,8 @@
     "build": "rm -rf dist && mkdir dist && babel index.js -o dist/index.js",
     "prepublish": "npm test && npm run build",
     "lint": "eslint index.js",
-    "test": "jest"
+    "test": "jest",
+    "test:cover": "jest --coverage"
   },
   "keywords": [
     "react",

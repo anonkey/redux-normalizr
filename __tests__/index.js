@@ -36,6 +36,7 @@ const fakeDataNextRes = { meta: { schema: model }, payload: fakeDataNorm, type: 
 
 
 test('test nulls', () => {
+  const nullTypeData = { payload: fakeData, meta: { schema: model }, type: null };
   expect(() => middleware(null)).not.toThrow();
   expect(() => middleware({ actionFilter: null })).not.toThrow();
 
@@ -43,6 +44,7 @@ test('test nulls', () => {
   expect(() => tmp({ meta: null })).not.toThrow();
   expect(() => tmp({ meta: { schema: null } })).not.toThrow();
   expect(() => tmp({ meta: { schema: null }, type: null })).not.toThrow();
+  expect(() => middleware({ filter: /_FULFILLED/ })()(() => null)(nullTypeData)).not.toThrow();
 });
 
 test('test action error', () => {
@@ -71,16 +73,18 @@ test('test action error', () => {
 
 test('empty data', () => {
   const next = jest.fn();
+  const emptyData = { payload: fakeDataEmpty, meta: { schema: model }, type: 'TEST_FULFILLED' };
 
-  middleware(null)()(next)({ payload: fakeDataEmpty, meta: { schema: model }, type: 'TEST_FULFILLED' });
+  middleware(null)()(next)(emptyData);
   expect(next).toHaveBeenCalledTimes(1);
   expect(next).toHaveBeenCalledWith(fakeDataEmptyNextRes);
 });
 
 test('relational data', () => {
   const next = jest.fn();
+  const relationalData = { payload: fakeData, meta: { schema: model }, type: 'TEST_FULFILLED' };
 
-  middleware(null)()(next)({ payload: fakeData, meta: { schema: model }, type: 'TEST_FULFILLED' });
+  middleware(null)()(next)(relationalData);
   expect(next).toHaveBeenCalledTimes(1);
   expect(next).toHaveBeenCalledWith(fakeDataNextRes);
 });
@@ -153,4 +157,20 @@ test('callbacksTests custom', () => {
   expect(next).toHaveBeenCalledWith(nextResult);
 });
 
-// TODO: callbacks with dummy data handling tests | filter tests
+test('filter', () => {
+  const next = jest.fn();
+  const inputDataNotMatching = { payload: fakeData, meta: { schema: model }, type: 'TEST_PENDING' };
+  const inputDataMatching = { payload: fakeData, meta: { schema: model }, type: 'TEST_FULFILLED' };
+  const filter = /_FULFILLED/;
+
+  middleware({ filter })()(next)(inputDataNotMatching);
+  expect(next).toHaveBeenCalledTimes(1);
+  expect(next).toHaveBeenCalledWith(inputDataNotMatching);
+
+  middleware({ filter })()(next)(inputDataMatching);
+
+  expect(next).toHaveBeenCalledTimes(2);
+  expect(next).toHaveBeenLastCalledWith(fakeDataNextRes);
+});
+
+// TODO: callbacks with dummy data handling tests
