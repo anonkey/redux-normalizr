@@ -173,4 +173,30 @@ test('filter', () => {
   expect(next).toHaveBeenLastCalledWith(fakeDataNextRes);
 });
 
-// TODO: callbacks with dummy data handling tests
+test('dummy callbacks', () => {
+  const getActionData = jest.fn(() => null);
+  const onNormalizeData = jest.fn(data => data);
+  const onNextAction = jest.fn((store, action, normalizedData) => ({
+    ...action,
+    payload: normalizedData,
+  }));
+  const store = { dispatch: jest.fn() };
+  const next = jest.fn();
+  const action = {
+    payload: fakeData,
+    meta: { schema: model },
+    type: 'TEST_FULFILLED',
+  };
+  expect(() => middleware({
+    getActionData,
+    onNormalizeData,
+    onNextAction,
+  })(store)(next)(action)).not.toThrow();
+
+  expect(getActionData).toHaveBeenCalledWith(store, action);
+  expect(onNormalizeData).not.toHaveBeenCalled();
+  expect(onNextAction).not.toHaveBeenCalled();
+  expect(next).toHaveBeenCalledWith(action);
+});
+
+// TODO: callbacks onNormalizeData onNextAction with dummy data handling tests

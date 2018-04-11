@@ -66,7 +66,9 @@ export default (options) => {
 
   return (store => next => (action) => {
     if (shouldProcessAction(action, opts.filter)) {
-      let normalizedData = normalize(opts.getActionData(store, action), action.meta.schema);
+      const data = opts.getActionData(store, action);
+      if (!data) return next(action);
+      let normalizedData = normalize(data, action.meta.schema);
 
       normalizedData = opts.onNormalizeData(normalizedData);
 
