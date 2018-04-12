@@ -6,15 +6,26 @@ import { normalize } from 'normalizr';
  * @param  {String|Regex} filter filter of action type to match
  * @return {Boolean}  shouldBeProcessed
  */
-const shouldProcessAction = ({
-  error,
-  payload,
-  meta,
-  type,
-}, filter) => (
-  !!(!error && payload && meta && meta.schema && (!filter || (type && type.match(filter))))
-);
+const shouldProcessAction = (action, filter) => {
+  const {
+    error,
+    payload,
+    meta,
+    type,
+  } = action;
 
+  return (!!(
+    !error && payload && meta && meta.schema
+       && (!filter
+          || (
+            typeof filter === 'function'
+              ? filter(action)
+              : (type && type.match(filter)
+              )
+          )
+       )
+  ));
+};
 /**
  * This callback fetch the data to normalize in the action
  *
@@ -45,7 +56,8 @@ const shouldProcessAction = ({
 * @param  {Object} action  redux action
 * @param  {String} action.type  type used by actionFilter option
 * @param  {Object} options middleware options
-* @param  {String|Regex} [options.actionFilter] pattern of action type to handle
+* @param  {String|Regex|Function} [options.actionFilter] pattern of action type to handle
+* *                               or function taking action and return if should be treated
 * @param  {GetDataCb} [options.getActionData] get data to normalize in action
 * @param  {OnNextCb} [options.onNextAction] get data to normalize in action
 * @param  {PostNormalizeCb} [options.onNormalizeData] update normalized data before sending action
