@@ -175,6 +175,7 @@ test('filter', () => {
 
 test('dummy callbacks', () => {
   const getActionData = jest.fn(() => null);
+  const getActionDataStr = jest.fn(() => 'toto');
   const onNormalizeData = jest.fn(data => data);
   const onNextAction = jest.fn((store, action, normalizedData) => ({
     ...action,
@@ -197,6 +198,18 @@ test('dummy callbacks', () => {
   expect(onNormalizeData).not.toHaveBeenCalled();
   expect(onNextAction).not.toHaveBeenCalled();
   expect(next).toHaveBeenCalledWith(action);
+
+  expect(() => middleware({
+    getActionData: getActionDataStr,
+    onNormalizeData,
+    onNextAction,
+  })(store)(next)(action)).not.toThrow();
+
+  expect(getActionDataStr).toHaveBeenCalledWith(store, action);
+  expect(onNormalizeData).not.toHaveBeenCalled();
+  expect(onNextAction).not.toHaveBeenCalled();
+  expect(next).toHaveBeenCalledTimes(2);
+  expect(next).toHaveBeenLastCalledWith(action);
 });
 
 // TODO: callbacks onNormalizeData onNextAction with dummy data handling tests

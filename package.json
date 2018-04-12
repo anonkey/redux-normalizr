@@ -1,6 +1,6 @@
 {
   "name": "redux-normalizr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Redux data normalization middleware which get actions with a meta.schema field an normalize her payload",
   "main": "dist/",
   "repository": "https://github.com/anonkey/redux-normalizr",
