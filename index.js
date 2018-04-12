@@ -12,7 +12,7 @@ const shouldProcessAction = ({
   meta,
   type,
 }, filter) => (
-  !error && payload && meta && meta.schema && (!filter || (type && type.match(filter)))
+  !!(!error && payload && meta && meta.schema && (!filter || (type && type.match(filter))))
 );
 
 /**
@@ -67,7 +67,7 @@ export default (options) => {
   return (store => next => (action) => {
     if (shouldProcessAction(action, opts.filter)) {
       const data = opts.getActionData(store, action);
-      if (!data) return next(action);
+      if (!data || typeof data !== 'object') return next(action);
       let normalizedData = normalize(data, action.meta.schema);
 
       normalizedData = opts.onNormalizeData(normalizedData);
