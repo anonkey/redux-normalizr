@@ -61,6 +61,7 @@ This callback trigger just before leaving for mutate the action or dispatch acti
 | store | ```ReduxStore``` | redux store |
 | action | ```ReduxAction``` | redux action |
 | normalizedData | ```ReduxAction``` | redux action |
+| originalData | ```Object``` | original data |
 
 ### normalizrMiddleware(options) ⇒ ```Boolean```
 Return a normalizer-middleware for redux

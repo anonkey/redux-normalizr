@@ -111,7 +111,7 @@ test('callbacksTests default', () => {
   })(store)(next)(action);
   expect(getActionData).toHaveBeenCalledWith(store, action);
   expect(onNormalizeData).toHaveBeenCalledWith(fakeDataNorm);
-  expect(onNextAction).toHaveBeenCalledWith(store, action, fakeDataNorm);
+  expect(onNextAction).toHaveBeenCalledWith(store, action, fakeDataNorm, fakeData);
   expect(next).toHaveBeenCalledWith(fakeDataNextRes);
 });
 
@@ -153,7 +153,7 @@ test('callbacksTests custom', () => {
   })(store)(next)(action);
   expect(getActionData).toHaveBeenCalledWith(store, action);
   expect(onNormalizeData).toHaveBeenCalledWith(fakeDataNorm);
-  expect(onNextAction).toHaveBeenCalledWith(store, action, fakeDataNorm.result);
+  expect(onNextAction).toHaveBeenCalledWith(store, action, fakeDataNorm.result, fakeData);
   expect(next).toHaveBeenCalledWith(nextResult);
 });
 

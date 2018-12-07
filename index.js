@@ -50,7 +50,8 @@ const shouldProcessAction = (action, filter) => {
  * @callback OnNextCb
  * @param {ReduxStore} store redux store
  * @param {ReduxAction} action redux action
- * @param {ReduxAction} normalizedData redux action
+ * @param {Object} normalizedData redux action
+ * @param {Object} original data
  * @return {Object} normalized data
  */
 /**
@@ -100,7 +101,7 @@ export default (options) => {
       normalizedData = opts.onNormalizeData(normalizedData);
       debugData(normalizedData);
       debug('  onNextAction');
-      const mutatedAction = opts.onNextAction(store, action, normalizedData);
+      const mutatedAction = opts.onNextAction(store, action, normalizedData, data);
       debugData(normalizedData);
 
       return next(mutatedAction);
