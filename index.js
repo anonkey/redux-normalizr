@@ -1,5 +1,8 @@
 import { normalize } from 'normalizr';
 
+const debug = require('debug')('redux-normalizr');
+const debugData = require('debug')('redux-normalizr-data');
+
 /**
  * Check if action should be processed
  * @param  {Object} action  redux action
@@ -77,15 +80,32 @@ export default (options) => {
 
 
   return (store => next => (action) => {
+    debug('Action received', action.type);
+    debugData(action);
     if (shouldProcessAction(action, opts.filter)) {
+      debug('Processing action');
+      debug('  getActionData');
       const data = opts.getActionData(store, action);
-      if (!data || typeof data !== 'object') return next(action);
+      debugData(data);
+
+      if (!data || typeof data !== 'object') {
+        debug('  Data returned is not an object or null');
+        return next(action);
+      }
+      debug('  Normalize data');
       let normalizedData = normalize(data, action.meta.schema);
+      debugData(normalizedData);
 
+      debug('  onNormalizeData');
       normalizedData = opts.onNormalizeData(normalizedData);
+      debugData(normalizedData);
+      debug('  onNextAction');
+      const mutatedAction = opts.onNextAction(store, action, normalizedData);
+      debugData(normalizedData);
 
-      return next(opts.onNextAction(store, action, normalizedData));
+      return next(mutatedAction);
     }
+    debug('Action not processed');
 
     return next(action);
   });

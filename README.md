@@ -150,7 +150,7 @@ const normalizrConfig = {
 
 /**
  * Create store with reducers and middlewares
- * @param  {Object}     reducers     Map of reducers
+ * @param  {Object}     initialState    store initial state
  * @return {ReduxStore} the redux store generated
  */
 export default initialState => createStore(
