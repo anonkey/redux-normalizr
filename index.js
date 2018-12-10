@@ -1,7 +1,7 @@
 import { normalize } from 'normalizr';
 
 const debug = require('debug')('redux-normalizr');
-const debugData = require('debug')('redux-normalizr-data');
+const debugData = require('debug')('redux-normalizr:data');
 
 /**
  * Check if action should be processed
@@ -16,7 +16,16 @@ const shouldProcessAction = (action, filter) => {
     meta,
     type,
   } = action;
-
+  console.log(
+    type,
+    !error, payload, meta && meta.schema, filter,
+    filter && (
+      typeof filter === 'function'
+        ? filter(action)
+        : (type && type.match(filter)
+        )
+    ),
+  );
   return (!!(
     !error && payload && meta && meta.schema
        && (!filter
@@ -83,13 +92,13 @@ export default (options) => {
   return (store => next => (action) => {
     debug('Action received', action.type);
     debugData(action);
-    if (shouldProcessAction(action, opts.filter)) {
+    if (shouldProcessAction(action, opts.actionFilter)) {
       debug('Processing action');
       debug('  getActionData');
       const data = opts.getActionData(store, action);
       debugData(data);
 
-      if (!data || typeof data !== 'object') {
+      if (!data) {
         debug('  Data returned is not an object or null');
         return next(action);
       }
