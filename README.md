@@ -120,6 +120,7 @@ normalize(payload, schema)
 
 
 ```js
+import normalizrMiddleware from 'redux-normalizr';
 import reducers from './reducers'
 /**
  *  Catch all resolved promise, normalize payload.data field,
@@ -159,7 +160,7 @@ export default initialState => createStore(
   initialState,
   compose(applyMiddleware(
     promise(),
-    normalizr(normalizrConfig),
+    normalizrMiddleware(normalizrConfig),
     thunk,
   ))
 );
